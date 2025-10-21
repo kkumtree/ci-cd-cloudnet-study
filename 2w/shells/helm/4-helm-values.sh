@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cat << EOF > values.yaml
+image:     
+  repository: quay.io/gitops-cookbook/pacman-kikd
+  tag: "1.0.0"
+  pullPolicy: Always
+  containerPort: 8080
+
+replicaCount: 1
+securityContext: {}     
+EOF
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cat << EOF > templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.image.containerPort }}
+      targetPort: {{ .Values.image.containerPort }}
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+EOF
