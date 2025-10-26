@@ -1,3 +1,8 @@
+#!/bin/bash
+
+rm templates/deployment.yaml
+
+cat << EOF > templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,3 +32,4 @@ spec:
             - containerPort: {{ .Values.image.containerPort }}
               name: http
               protocol: TCP
+EOF
