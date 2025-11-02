@@ -1,0 +1,40 @@
+services:
+
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    restart: unless-stopped
+    networks:
+      - cicd-network
+    ports:
+      - "8080:8080"
+      - "50000:50000"                      
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_home:/var/jenkins_home  
+    # privileged: true
+
+  gitea:
+    container_name: gitea
+    image: docker.gitea.com/gitea:1.25.0
+    restart: unless-stopped
+    networks:
+      - cicd-network
+    ports:
+      - "10022:22"                         
+      - "3000:3000"
+    volumes:
+      - ./gitea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro 
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+
+volumes:
+  jenkins_home:
+  gitea-data:
+
+networks:
+  cicd-network:
+    driver: bridge

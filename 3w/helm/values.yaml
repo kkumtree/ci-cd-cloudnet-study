@@ -1,0 +1,6 @@
+image:
+  repository: docker.io/bc0569/dev-app
+  tag: "0.0.1"
+  containerPort: 80
+
+replicaCount: 2
