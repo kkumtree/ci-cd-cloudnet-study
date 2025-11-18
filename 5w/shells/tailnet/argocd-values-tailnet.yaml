@@ -1,0 +1,17 @@
+global:
+  domain: kkumtree-ms-7a34.panda-ule.ts.net
+
+# # TLS certificate configuration via cert-manager
+# # cert-manager가 있을 때, 활용.  
+# certificate: 
+#   enabled: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls: true
