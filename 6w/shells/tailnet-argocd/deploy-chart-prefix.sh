@@ -9,7 +9,6 @@ kubectl -n argocd create secret tls argocd-server-tls \
 
 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml
 
-
 cat <<EOF > argocd-values-tailnet.yaml
 global:
   domain: kkumtree-ms-7a34.panda-ule.ts.net
@@ -17,7 +16,9 @@ global:
 configs:
   params:
     server.basehref: "/_argocd"
-    server.rootpath: "/_argocd"
+    server.rootpath: _argocd/
+  cm:
+    url: https://kkumtree-ms-7a34.panda-ule.ts.net/_argocd
 
 server:
   ingress:
@@ -25,13 +26,10 @@ server:
     ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-pathrough: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      # nginx.ingress.kubernetes.io/rewrite-target: /$2
-    # paths:
-    #   - /argocd(/|$)(.*)
-    pathType: ImplementationSpecific
-    # pathType: Prefix
+    path: /_argocd/
+    pathType: Prefix
     tls: true
 EOF
 
