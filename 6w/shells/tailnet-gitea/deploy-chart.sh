@@ -2,11 +2,6 @@
 kubectl config use-context kind-mgmt
 kubectl create ns gitea
 
-# confirm cert and key is available in the path
-kubectl -n gitea create secret tls gitea-selfsigned-tls \
-  --cert=openssl-x509-output/kkumtree-ms-7a34.panda-ule.ts.net.crt \
-  --key=openssl-x509-output/kkumtree-ms-7a34.panda-ule.ts.net.key
-
 cat <<EOF > gitea-values-tailnet-prefix.yaml
 global:
   namespace: "gitea"
@@ -49,7 +44,7 @@ ingress:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: gitea-selfsigned-tls
+    - secretName: argocd-server-tls
       hosts:
         - kkumtree-ms-7a34.panda-ule.ts.net
 

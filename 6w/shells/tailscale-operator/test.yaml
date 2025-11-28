@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kind-mgmt-k8s
+  annotations:
+    tailscale.com/tailnet-fqdn: kind-mgmt-k8s.panda-ule.ts.net
+spec:
+  externalName: placeholder
+  type: ExternalName
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+

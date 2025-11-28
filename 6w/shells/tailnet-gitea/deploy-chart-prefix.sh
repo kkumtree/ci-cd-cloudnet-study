@@ -2,11 +2,6 @@
 kubectl config use-context kind-mgmt
 kubectl create ns gitea
 
-# confirm cert and key is available in the path
-kubectl -n gitea create secret tls gitea-selfsigned-tls \
-  --cert=openssl-x509-output/kkumtree-ms-7a34.panda-ule.ts.net.crt \
-  --key=openssl-x509-output/kkumtree-ms-7a34.panda-ule.ts.net.key
-
 cat <<EOF > gitea-values-tailnet-prefix.yaml
 global:
   namespace: "gitea"
@@ -17,7 +12,7 @@ gitea:
     server:
       PROTOCOL: http
       DOMAIN: kkumtree-ms-7a34.panda-ule.ts.net
-      ROOT_URL: http://kkumtree-ms-7a34.panda-ule.ts.net/_gitea/
+      ROOT_URL: https://kkumtree-ms-7a34.panda-ule.ts.net/_gitea/
       CERT_FILE: /certs/tls.crt
       KEY_FILE: /certs/tls.key
 
@@ -44,12 +39,20 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /\$2
   hosts:
     - host: kkumtree-ms-7a34.panda-ule.ts.net
       paths: 
         - path: /_gitea(/|$)(.*)
           pathType: ImplementationSpecific
+        - path: /v2(/|$)(.*)
+          pathType: ImplementationSpecific
+#    - host: kind-mgmt-k8s.panda-ule.ts.net
+#      paths: 
+#        - path: /_gitea(/|$)(.*)
+#          pathType: ImplementationSpecific
+#        - path: /v2(/|$)(.*)
+#          pathType: ImplementationSpecific
   tls:
     - secretName: gitea-selfsigned-tls
       hosts:
@@ -58,7 +61,7 @@ ingress:
 extraVolumes:
 - name: gitea-tls
   secret:
-    secretName: gitea-selfsigned-tls
+    secretName: argocd-server-tls
 extraVolumeMounts:
 - name: gitea-tls
   readOnly: true
