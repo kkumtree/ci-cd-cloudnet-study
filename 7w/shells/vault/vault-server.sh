@@ -1,0 +1,61 @@
+#!/bin/bash
+
+helm repo add hashicorp https://helm.releases.hashicorp.com
+
+
+
+# vault-values-dev.yaml 생성
+cat <<EOF > vault-values-dev.yaml
+global:
+  enabled: true
+  tlsDisable: true
+
+injector:
+  enabled: true
+  # Sidecar Injection을 위해 필요한 설정
+
+
+
+server:
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+#      nginx.ingress.kubernetes.io/rewrite-target: "/\$1"
+#      nginx.ingress.kubernetes.io/use-regex: "true"
+    ingressClassName: "nginx"
+    hosts:
+      - host: kkumtree-ms-7a34.panda-ule.ts.net
+        paths:
+          - /
+#      - path: /_vault(?:/(.*))?
+#        pathType: ImplementationSpecific
+
+  dev:
+    enabled: true
+    devRootToken: "root" # 학습 편의를 위해 Root Token을 'root'로 고정
+
+  # 데이터 영구 저장이 필요 없으므로 비활성화 (Dev모드는 메모리 사용)
+  dataStorage:
+    enabled: false
+
+  tls: []
+
+  # UI 활성화 및 NodePort 노출
+#  service:
+#    type: "NodePort"
+#    nodePort: 30000
+
+  service:
+    enabled: true
+    type: "ClusterIP"
+
+
+ui:
+  enabled: true
+  serviceType: "ClusterIP"
+  activeVaultPodOnly: true
+EOF
+
+helm upgrade vault hashicorp/vault -n vault -f vault-values-dev.yaml --install --create-namespace
