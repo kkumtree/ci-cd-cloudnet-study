@@ -31,11 +31,6 @@ kubectl config use-context kind-vault
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
-kubectl wait --namespace ingress-nginx \
-  --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=60s
-
 kubectl patch deployment ingress-nginx-controller -n ingress-nginx \
   --type='merge' \
   -p='{
@@ -55,5 +50,12 @@ kubectl get deployment ingress-nginx-controller -n ingress-nginx -o yaml \
         - --enable-ssl-passthrough' | kubectl apply -f -
 
 sudo tailscale serve -bg localhost:80
+
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=60s
+
+
 
 kubectl apply -f whoami.yaml 
