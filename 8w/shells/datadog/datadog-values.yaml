@@ -1,0 +1,27 @@
+datadog:
+  site: "datadoghq.com"
+  clusterName: "cloudnet"
+  apiKeyExistingSecret: "datadog-secret"
+  tags:
+    - "env:dev"
+  env:
+    - name: DD_HOSTNAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+  confd:
+    vault.yaml: |-
+      ad_identifiers:
+        - vault
+      init_config:
+      instances:
+        - use_openmetrics: false
+          api_url: http://localhost:30000/v1
+          no_token: true
+  kubelet:
+    tlsVerify: false
+agents:
+  enabled: true
+  useHostNetwork: true
+registry: "docker.io/datadog"
+

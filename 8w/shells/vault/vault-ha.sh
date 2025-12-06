@@ -46,9 +46,8 @@ injector:
   enabled: false
 EOF
 
-helm upgrade vault hashicorp/vault -n vault \
-	-f vault-ha.yaml \
+helm apply vault hashicorp/vault -n vault \
+	-f vault-ha-ot.yaml \
 	--version 0.31.0 \
-	--install --create-namespace
 
 
